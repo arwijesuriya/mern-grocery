@@ -4,6 +4,8 @@ import { assets } from "../assets/assets";
 
 const Navbar = () => {
     const [open, setOpen] = React.useState(false);
+    const {user, setUser} = useAppContext();
+
     return (
         <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
 
@@ -40,11 +42,20 @@ const Navbar = () => {
             <div className={`${open ? 'flex' : 'hidden'} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
                 <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
                 <NavLink to="/products" onClick={() => setOpen(false)}>Products</NavLink>
-                <NavLink to="/" onClick={() => setOpen(false)}>Orders</NavLink>
+                {user &&
+                    <NavLink to="/products" onClick={() => setOpen(false)}>Orders</NavLink>
+                }
+                <NavLink to="/" onClick={() => setOpen(false)}>Contact</NavLink>
                 
-                <button className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
-                    Login
-                </button>
+                {!user ? (
+                    <button onClick={() => {setOpen(false)}} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                        Login
+                    </button>
+                ) : (
+                    <button className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                        Logout
+                    </button>
+                )}
             </div>
 
         </nav>
