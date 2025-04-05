@@ -1,10 +1,16 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom';
 import { assets } from "../assets/assets";
+import { useAppContext } from '../context/AppContext';
 
 const Navbar = () => {
     const [open, setOpen] = React.useState(false);
-    const {user, setUser} = useAppContext();
+    const {user, setUser, setShowUserLogin, navigate} = useAppContext();
+
+    const logout = async () => {
+        setUser(null);
+        navigate("/");
+    }
 
     return (
         <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -34,29 +40,38 @@ const Navbar = () => {
                 </button>
             </div>
 
+            {/* Mobile Menu */}
             <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
                 <img src={assets.menu_icon} alt="Menu" />
             </button>
 
-            {/* Mobile Menu */}
-            <div className={`${open ? 'flex' : 'hidden'} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
-                <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
-                <NavLink to="/products" onClick={() => setOpen(false)}>Products</NavLink>
-                {user &&
-                    <NavLink to="/products" onClick={() => setOpen(false)}>Orders</NavLink>
-                }
-                <NavLink to="/" onClick={() => setOpen(false)}>Contact</NavLink>
-                
-                {!user ? (
-                    <button onClick={() => {setOpen(false)}} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
-                        Login
-                    </button>
-                ) : (
-                    <button className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
-                        Logout
-                    </button>
-                )}
-            </div>
+            {/* Mobile Menu Logic */}
+            { open && (
+                <div className={`${open ? 'flex' : 'hidden'} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
+                    <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
+                    <NavLink to="/products" onClick={() => setOpen(false)}>Products</NavLink>
+                    {user &&
+                        <NavLink to="/products" onClick={() => setOpen(false)}>Orders</NavLink>
+                    }
+                    <NavLink to="/" onClick={() => setOpen(false)}>Contact</NavLink>
+                    
+                    {!user ? (
+                        <button 
+                            onClick={() => {
+                                setOpen(false)
+                                setShowUserLogin(true);
+                            }} 
+                            className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm"
+                        >
+                            Login
+                        </button>
+                    ) : (
+                        <button onClick={logout} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                            Logout
+                        </button>
+                    )}
+                </div>
+            )}
 
         </nav>
     )
