@@ -1,23 +1,66 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dummyProducts } from "../assets/assets";
+import toast from "react-hot-toast";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
+
+    const currency = import.meta.VITE_CURRENCY;
+    
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isSeller, setIseller] = useState(false);
     const [showUserLogin, setShowUserLogin] = useState(false);
     const [products, setProducts] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
 
-    const freshProducts = async () => {
+    // Fetch products
+    const fetchProducts = async () => {
         setProducts(dummyProducts);
     };
 
     useEffect(() => {
-        freshProducts();
+        fetchProducts();
     }, []);
+
+    // Fetch products to cart
+    const addToCart = async (itemId) => {
+        let cartData = structuredClone(cartItems);
+
+        if (cartData[itemId]) {
+            cartData[itemId] += 1;
+        }
+        else {
+            cartData[itemId] = 1;
+        }
+        setCartItems(cartData);
+        toast.success("Added to cart");
+    };
+
+    // Update cart items quantity
+    const updateCartItem = (itemId, quantity) => {
+        let cartData = structuredClone(cartItems);
+        cartData[itemId] = quantity;
+        setCartItems(cartData);
+        toast.success("Cart updated");
+    };
+
+    // Remove cart item
+    const removeFromCart = (itemId) => {
+        let cartData = structuredClone(cartItems);
+        
+        if (cartData[itemId]) {
+            cartData[itemId] -= 1;
+            if (cartData[itemId] === 0) {
+                delete cartData[itemId];
+            }
+        }
+        
+        toast.success("Item removed from cart");
+        setCartItems(cartData);
+    };
 
     const value = {
         navigate, 
@@ -28,7 +71,12 @@ export const AppContextProvider = ({ children }) => {
         showUserLogin,
         setShowUserLogin,
         products,
-        setProducts
+        setProducts,
+        currency,
+        addToCart,
+        updateCartItem,
+        removeFromCart,
+        cartItems
     }
 
     return (
