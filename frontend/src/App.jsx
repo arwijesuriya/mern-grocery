@@ -21,7 +21,7 @@ const App = () => {
         </Routes>
       </div>
 
-      <Footer />
+      {!isSellerPath && <Footer />}
     </div>
   )
 }
