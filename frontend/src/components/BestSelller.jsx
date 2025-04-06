@@ -1,4 +1,5 @@
 import React from 'react'
+import ProductCard from './ProductCard'
 
 const BestSelller = () => {
     return (
@@ -6,6 +7,10 @@ const BestSelller = () => {
             <p className="text-2xl md:text-3xl font-medium">
                 Best Sellers
             </p>
+
+            <div>
+                <ProductCard />
+            </div>
         </div>
     )
 }
